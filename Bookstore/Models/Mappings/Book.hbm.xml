@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="Bookstore"
+                   namespace="Bookstore.Models.Domain">
+  <class name="Book" table="Book" dynamic-update="true" >
+    <cache usage="read-write"/>
+    <id name="Id" column="Id" type="long">
+      <generator class="native" />
+    </id>
+
+    <property name="Title"  />
+    <property name="Author" />
+    <property name="Genre" />
+    <property name="Price" />
+  </class>
+</hibernate-mapping>
