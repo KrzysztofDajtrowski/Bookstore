@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -8,9 +9,17 @@ namespace Bookstore.Models.Domain
     public class Book
     {
         public virtual long Id { get; set; }
+
+        [Display(Name = "Tytuł")]
         public virtual string Title { get; set; }
+
+        [Display(Name = "Autor")]
         public virtual string Author { get; set; }
+
+        [Display(Name = "Gatunek")]
         public virtual string Genre { get; set; }
-        public virtual decimal Price { get; set; }
+
+        [Display(Name = "Cena")]
+        public virtual float Price { get; set; }
     }
 }

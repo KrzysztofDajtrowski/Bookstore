@@ -1,8 +1,8 @@
-﻿@{
+﻿@model Bookstore.Models.ViewController.LoginViewModel
+@{
     /**/
 
     ViewBag.Title = "Logowanie";
-    Layout = "~/Views/Shared/_LayoutUnlogged.cshtml";
 }
 
 <h2>Logowanie</h2>
@@ -12,19 +12,19 @@
 {
     <h4>Podaj swoje dane</h4>
     <hr />
-
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.Label("Nazwa użytkownika:", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.Login, new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.Editor("Login", new { htmlAttributes = new { @class = "form-control" } })
-            @*@Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })*@
+            @Html.TextBoxFor(model => model.Login, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
-        @Html.Label("Hasło:", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.Editor("Login", new { htmlAttributes = new { @class = "form-control" } })
-            @*@Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })*@
+            @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">

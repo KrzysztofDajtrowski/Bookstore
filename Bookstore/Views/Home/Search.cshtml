@@ -1,39 +1,37 @@
-﻿@model IEnumerable<Bookstore.Models.Domain.Book>
+﻿@model PagedList.IPagedList<Bookstore.Models.Domain.Book>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @{
     ViewBag.Title = "Search";
-    Layout = "~/Views/Shared/_LayoutUnlogged.cshtml";
 }
 
 <div class="jumbotron">
     <p class="lead">
         @using (Html.BeginForm())
         {
-        <div class="form-group">
-            @Html.Label("Szukaj tytułu:", htmlAttributes: new { @class = "control-label col-md-2" })
-            @Html.Editor("TitleToSearch", new { htmlAttributes = new { @class = "form-control" } })
-            <input type="submit" value="Szukaj" class="btn btn-default" />
-            @Html.ActionLink("Wyczyść", "Search", "Home", new { @class = "btn btn-default" })
+            <div class="form-group">
+                @Html.Label("Szukaj tytułu:", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.Editor("TitleToSearch", new { htmlAttributes = new { @class = "form-control" } })
+                <input type="submit" value="Szukaj" class="btn btn-default" />
+                @Html.ActionLink("Wyczyść", "Search", "Home", new { @class = "btn btn-default" })
 
-        </div>
-        }   
+            </div>
+        }
 </div>
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Id)
+            @Html.DisplayNameFor(model => model.First().Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Author)
+            @Html.DisplayNameFor(model => model.First().Author)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Genre)
+            @Html.DisplayNameFor(model => model.First().Genre)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model.First().Price)
         </th>
         <th></th>
 
@@ -43,7 +41,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Author)
@@ -51,14 +49,22 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Genre)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
 
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
+            @if (Request.IsAuthenticated)
+            {
+            <td>
+                @Html.ActionLink("Index", "Home");
+            </td>
+            }
 
         </tr>
     }
 </table>
+
+<br />
+
+@Html.PagedListPager(Model, page => Url.Action("Search",
+                    new { page }))

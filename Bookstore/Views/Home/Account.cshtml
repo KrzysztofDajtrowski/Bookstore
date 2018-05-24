@@ -1,0 +1,8 @@
+﻿@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Konto użytkownika";
+}
+
+<h2>Twoje konto</h2>
+<hr />
+<p class="lead">Twoj login:  @User.Identity.GetUserName()</p>

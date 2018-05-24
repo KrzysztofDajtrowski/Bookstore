@@ -1,13 +1,21 @@
-﻿@{
-    Layout = "~/Views/Shared/_LayoutUnlogged.cshtml";
+﻿@using Microsoft.AspNet.Identity
+@{
     ViewBag.Title = "Ksiegarnia";
 }
 
 <div class="jumbotron">
     <h1>Księgarnia internetowa</h1>
-    <p class="lead">Witamy na stronie naszej księgarnii.</p>
+    @if (Request.IsAuthenticated)
+    {
+        <p class="lead">Witaj @User.Identity.GetUserName() na stronie naszej księgarnii.</p>
+    }
+    else
+    {
+        <p class="lead">Witamy na stronie naszej księgarnii.</p>
+    }
+
     @*<p><a href="https://asp.net" class="btn btn-primary btn-lg">Szukaj książek &raquo;</a></p>*@
     @*<div class="btn btn-primary btn-lg">@Html.ActionLink("Szukaj książek","Search","Home")</div>*@
-    @Html.ActionLink("Szukaj książek","Search","Home",new { @class = "btn btn-primary btn-lg" })
+    @Html.ActionLink("Szukaj książek", "Search", "Home", new { @class = "btn btn-primary btn-lg" })
 </div>
 

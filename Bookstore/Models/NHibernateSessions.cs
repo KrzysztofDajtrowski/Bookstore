@@ -1,4 +1,7 @@
-﻿using NHibernate;
+﻿using Bookstore.Models.Domain;
+using Bookstore.Models.Identity;
+using Microsoft.AspNet.Identity;
+using NHibernate;
 using NHibernate.Cfg;
 using System;
 using System.Collections.Generic;
@@ -18,8 +21,17 @@ namespace Bookstore.Models
             var bookConfigFile = HttpContext.Current.Server.MapPath(@"~\Models\Mappings\Book.hbm.xml");
             configuration.AddFile(bookConfigFile);
 
+            var usersConfigFile = HttpContext.Current.Server.MapPath(@"~\Models\Mappings\Users.hbm.xml");
+            configuration.AddFile(usersConfigFile);
+
             ISessionFactory sessionFactory = configuration.BuildSessionFactory();
             return sessionFactory.OpenSession();
         }
+
+        public IUserStore<User, int> Users
+        {
+            get { return new IdentityStore(OpenSession()); }
+        }
+
     }
 }

@@ -1,35 +1,40 @@
-﻿@{
+﻿@model Bookstore.Models.ViewController.RegiesterViewModel
+@{
     /**/
+    <script src='https://www.google.com/recaptcha/api.js'></script>
     ViewBag.Title = "Rejestracja";
-    Layout = "~/Views/Shared/_LayoutUnlogged.cshtml";
 }
 
 <h2>Rejestracja</h2>
 
 @using (Html.BeginForm())
 {
+    @Html.AntiForgeryToken()
     <h4>Utwórz nowe konto</h4>
     <hr />
-
+    @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.Label("Nazwa użytkownika:", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.Login, new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.Editor("hhh", new { htmlAttributes = new { @class = "form-control" } })
-            @*@Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })*@
+            @Html.TextBoxFor(model => model.Login, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
-        @Html.Label("Hasło:", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.Editor("hyg", new { htmlAttributes = new { @class = "form-control" } })
-            @*@Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })*@
+            @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
-        @Html.Label("Powtórz hasło:", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.RetypePassword, new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.Editor("uyg", new { htmlAttributes = new { @class = "form-control" } })
-            @*@Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })*@
+            @Html.PasswordFor(m => m.RetypePassword, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Zaznacz", new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <div class="g-recaptcha" data-sitekey="6Le2iVoUAAAAAKPtqN79Zv_dMyPCnizNige-0Qxw"></div>
         </div>
     </div>
     <div class="form-group">
@@ -37,5 +42,6 @@
             <input type="submit" value="Utwórz konto" class="btn btn-default" />
         </div>
     </div>
-    <p>.</p>
+
 }
+
