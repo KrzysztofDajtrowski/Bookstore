@@ -1,4 +1,58 @@
-﻿@{
+﻿@model IEnumerable<Bookstore.Models.Domain.Book>
+@{
+
     ViewBag.Title = "Koszyk";
 }
-<p>Twoje zakupy</p>
+
+<h2>Koszyk</h2>
+
+@if (ViewBag.Empty)
+{
+    <p>Twój koszyk jest aktualnie pusty.</p>
+}
+else
+{
+    <p>W Twoim koszyku jest aktualnie @ViewBag.BookInBasket książek.</p>
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Price)
+            </th>
+            <th></th>
+
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+            </tr>
+        }
+            
+
+            <p><b>Cena łączna: @ViewBag.SummaryPrices PLN</b></p>
+                
+    </table>
+}

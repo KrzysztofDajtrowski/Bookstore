@@ -200,6 +200,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Domain\Book.cs" />
+    <Compile Include="Models\Domain\Orders.cs" />
+    <Compile Include="Models\Domain\OrdersBook.cs" />
     <Compile Include="Models\Domain\Users.cs" />
     <Compile Include="Models\Identity\IdentityStore.cs" />
     <Compile Include="Models\Identity\SingInManager.cs" />
@@ -222,7 +224,13 @@
     <EmbeddedResource Include="Models\Mappings\Users.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Models\Mappings\Book.hbm.xml" />
+    <EmbeddedResource Include="Models\Mappings\Book.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Models\Mappings\OrdersBook.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Models\Mappings\Orders.hbm.xml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">

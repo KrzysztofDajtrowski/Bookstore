@@ -3,7 +3,7 @@
                    namespace="Bookstore.Models.Domain">
   <class name="Book" table="Book" dynamic-update="true" >
     <cache usage="read-write"/>
-    <id name="Id" column="Id" type="long">
+    <id name="Id" column="Id" type="int">
       <generator class="native" />
     </id>
 

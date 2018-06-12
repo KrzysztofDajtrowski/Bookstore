@@ -13,26 +13,85 @@ using Bookstore.Models.Identity;
 using System.Web;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
+using System;
 
 namespace Bookstore.Controllers
 {
     public class HomeController : Controller
     {
+        private int GetLoggedUserId()
+        {
+            int id;
+            Int32.TryParse(User.Identity.GetUserId(), out id);
+            return id;
+        }
+
+
+        //Get
         public ActionResult Index()
         {
             return View();
         }
 
+        //GET
         public ActionResult Basket()
         {
             if (Request.IsAuthenticated)
             {
-                return View();
+                var books = GetBooksInCart(GetLoggedUserId());
+
+                if (books.Count() == 0)
+                {
+                    ViewBag.Empty = true;
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Empty = false;
+                    ViewBag.BookInBasket = books.Count();
+                    ViewBag.SummaryPrices = SummaryPrices(books);
+                    return View(books);
+                }                
             }
             else
             {
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        private IEnumerable<Book> GetBooksInCart(int userId)
+        {
+            IEnumerable<OrdersBook> bookInBasket;  
+            IEnumerable<Book> books; 
+            List<Book> booksInOrder = new List<Book>(); 
+            using (ISession session = NHibernateSessions.OpenSession())
+            {
+                books = session.Query<Book>().ToList();
+                bookInBasket = session.Query<OrdersBook>().Where(x => x.OrderID == IsAnyOrderExist(userId)).ToList();
+            }
+
+            books = books.AsQueryable();
+
+            foreach (var item in bookInBasket)
+            {
+                var id = (long)item.BookID;
+                var book = books.Where(x => x.Id == id).First();
+                booksInOrder.Add( new Book { Author = book.Author, Genre = book.Genre, Price = book.Price, Title = book.Title } );
+            }
+
+            return booksInOrder.AsEnumerable();
+        }
+
+        private int SummaryPrices(IEnumerable<Book> books)
+        {
+            float summary = default(int);
+
+            foreach (var item in books)
+            {
+                summary += item.Price;
+            }
+
+            return (int)summary;
         }
 
         public ActionResult Account()
@@ -142,27 +201,7 @@ namespace Bookstore.Controllers
             }
             return View(model);
         }
-        //if (ModelState.IsValid && IsReCaptchValid())
-        //{
-
-        //    using (ISession session = NHibernateSessions.OpenSession())
-        //    {
-        //        var user = new User() { UserName = model.Login, Password = model.Password };
-        //        ViewBag.IsRobot = 0;
-
-        //        using (var trans = session.BeginTransaction())
-        //        {
-        //            session.Save(user);
-        //            trans.Commit();
-
-        //        }
-        //    }
-        //}
-
-        //if (!model.Equals(null) && model.Password.Equals("letmein"))
-        //{
-        //    return RedirectToAction("Index", "Shop");
-        //}
+        
 
 
         //return View(model);
@@ -174,7 +213,6 @@ namespace Bookstore.Controllers
         {
             get { return HttpContext.GetOwinContext().Get<SignInManager>(); }
         }
-
 
         public bool IsReCaptchValid()
         {
@@ -206,5 +244,81 @@ namespace Bookstore.Controllers
             SignInManager.SignOut();
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        public ActionResult AddBook(long? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "nie przesłano ID ksiązki do dodania");
+            }
+            else
+            {
+                long bookId = id ?? default(int);
+                var userId = GetLoggedUserId();
+                //int book_ID = Int32.Parse(bookId.ToString());
+
+                if (IsAnyOrderExist(userId) == 0)
+                {
+                    CreateNewOrder(userId);
+                }
+
+                AddBookToOrder(userId, (int)bookId);
+            }
+            return RedirectToAction("Search", "Home");
+
+        }
+
+        private int IsAnyOrderExist(int userId)
+        {
+            using (ISession session = NHibernateSessions.OpenSession())
+            {
+                var isOrderActive = session.Query<Orders>().Where(x => x.UserID.Id == userId).Where(x => x.Active == true).FirstOrDefault();
+                if (isOrderActive == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return isOrderActive.Id;
+                }
+
+            }
+        }
+
+        private void CreateNewOrder(int userId)
+        {
+            using (ISession session = NHibernateSessions.OpenSession())
+            {
+                var currentLoggedUser = session.Query<User>().Where(x => x.Id == userId).First();
+
+                using (var transaction = session.BeginTransaction())
+                { 
+                    var createOrder = new Orders() { UserID = currentLoggedUser, Active = true };
+                    session.Save(createOrder);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private void AddBookToOrder(int userId, int bookId)
+        {
+            using (ISession session = NHibernateSessions.OpenSession())
+            {
+                var activeOrder = session.Query<Orders>().Where(x => x.UserID.Id == userId).Where(x => x.Active == true).FirstOrDefault();
+
+
+                if (activeOrder != null)
+                {
+                    using (var transaction = session.BeginTransaction())
+                    {
+                        var bookOrder = new OrdersBook() { BookID = bookId , OrderID = activeOrder.Id };
+                        session.Save(bookOrder);
+                        transaction.Commit();
+                    }
+                }
+            }
+        }
+
     }
 }

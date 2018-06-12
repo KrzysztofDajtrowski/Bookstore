@@ -24,6 +24,12 @@ namespace Bookstore.Models
             var usersConfigFile = HttpContext.Current.Server.MapPath(@"~\Models\Mappings\Users.hbm.xml");
             configuration.AddFile(usersConfigFile);
 
+            var ordersConfigFile = HttpContext.Current.Server.MapPath(@"~\Models\Mappings\Orders.hbm.xml");
+            configuration.AddFile(ordersConfigFile);
+
+            var ordersBookConfigFile = HttpContext.Current.Server.MapPath(@"~\Models\Mappings\OrdersBook.hbm.xml");
+            configuration.AddFile(ordersBookConfigFile);
+
             ISessionFactory sessionFactory = configuration.BuildSessionFactory();
             return sessionFactory.OpenSession();
         }

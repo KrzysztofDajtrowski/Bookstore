@@ -56,7 +56,7 @@
             @if (Request.IsAuthenticated)
             {
             <td>
-                @Html.ActionLink("Index", "Home");
+                @Html.ActionLink("Dodaj do koszyka", "AddBook", new { id = item.Id })
             </td>
             }
 
