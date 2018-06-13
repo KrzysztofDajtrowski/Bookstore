@@ -14,6 +14,8 @@ using System.Web;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
 using System;
+using System.Net.Mail;
+using System.Net.Http;
 
 namespace Bookstore.Controllers
 {
@@ -26,6 +28,156 @@ namespace Bookstore.Controllers
             return id;
         }
 
+        public ActionResult ClearOrder()
+        {
+            if (Request.IsAuthenticated)
+            {
+                var actualUserID = GetLoggedUserId();
+
+                if (actualUserID != 0)
+                {
+                    using (ISession session = NHibernateSessions.OpenSession())
+                    {
+                        var order = session.Query<Orders>().Where(x => x.UserID.Id == actualUserID).First();
+                        var ord = session.Load<Orders>(order.Id);
+                        order.Active = false;
+                        session.Flush();
+                    }
+                }
+
+                return RedirectToAction("Search", "Home");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            
+        }
+
+        public ActionResult OrderBookInBasket()
+        {
+            if (Request.IsAuthenticated)
+            {
+                return RedirectToAction("Address", "Home", routeValues: null);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public ActionResult Address(AddressViewModel model)
+        {
+            if (Request.IsAuthenticated)
+            {
+                if (ModelState.IsValid)
+                {
+                    var actualUserID = GetLoggedUserId();
+                    Orders ord;
+
+                    if (actualUserID != 0)
+                    {
+                        using (ISession session = NHibernateSessions.OpenSession())
+                        {
+                            var order = session.Query<Orders>().Where(x => x.UserID.Id == actualUserID).First();
+                            ord = session.Load<Orders>(order.Id);
+                            ord.FirstName = model.FirstName;
+                            ord.LastName = model.LastName;
+                            ord.Street = model.Street;
+                            ord.City = model.City;
+                            ord.Country = model.Country;
+                            session.Flush();
+                        }
+                        GenerateEmailWithBooks(GetBooksInCart(actualUserID), User.Identity.GetUserName(), ord);
+                    }
+
+                    
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View(model);
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+           
+
+
+
+            
+        }
+
+        private bool GenerateEmailWithBooks(IEnumerable<Book> books, string emailTo, Orders order)
+        {
+            using (SmtpClient client = new SmtpClient())
+            {
+                using (MailMessage message = new MailMessage())
+                {
+
+                    string messageBody = string.Empty;
+
+                    message.To.Add(emailTo);
+                    message.IsBodyHtml = true;
+                    message.Subject = "Złożone zamówienie";
+                    messageBody = "<b>Złożyłeś zamówienie na następujące pozycje:</b> ";
+
+                    foreach (var item in books)
+                    {
+                        messageBody = messageBody + "<br/>" + item.Title + " - " + item.Author + " - " + "CENA: " + item.Price;
+                    }
+
+                    messageBody = messageBody +  "<br/><b>Cena łączna: " + SummaryPrices(books) + "PLN</b>" +
+                        "<br/><br/><b>Dane wysyłki:</b><br/>" +
+                        order.LastName + " " + order.LastName + "<br/>" +
+                        order.Street + "<br/>" + order.City + "<br/>" + order.Country;
+
+                    message.Body = messageBody;
+
+                    try
+                    {
+                        client.Send(message);
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+
+                        return false;
+                    }
+                }
+            }
+        }
+
+        private bool GenerateEmailWithNewUser(string emailTo)
+        {
+            using (SmtpClient client = new SmtpClient())
+            {
+                using (MailMessage message = new MailMessage())
+                {
+
+                    string messageBody = string.Empty;
+
+                    message.To.Add(emailTo);
+                    message.IsBodyHtml = true;
+                    message.Subject = "Rejestracja nowego użytkownika";
+                    message.Body = "Na podanym adresie zajejestrowano nowego użytkownika" +
+                        "<br/>Twoj login: " + emailTo;
+
+                    try
+                    {
+                        client.Send(message);
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+
+                        return false;
+                    }
+                }
+            }
+        }
 
         //Get
         public ActionResult Index()
@@ -161,9 +313,7 @@ namespace Bookstore.Controllers
             }
             return View(model);
         }
-
-
-
+        
         //GET
         public ActionResult Register()
         {
@@ -184,6 +334,7 @@ namespace Bookstore.Controllers
                 if (result.Succeeded)
                 {
                     SignInManager.SignIn(user, false, false);
+                    GenerateEmailWithNewUser(user.UserName);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -202,8 +353,6 @@ namespace Bookstore.Controllers
             return View(model);
         }
         
-
-
         //return View(model);
         public UserManager UserManager
         {
@@ -256,7 +405,7 @@ namespace Bookstore.Controllers
             {
                 long bookId = id ?? default(int);
                 var userId = GetLoggedUserId();
-                //int book_ID = Int32.Parse(bookId.ToString());
+
 
                 if (IsAnyOrderExist(userId) == 0)
                 {

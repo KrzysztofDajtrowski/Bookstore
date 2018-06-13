@@ -8,6 +8,11 @@
     </id>
 
     <property name="Active" />
+    <property name="FirstName" />
+    <property name="LastName" />
+    <property name="Street" />
+    <property name="City" />
+    <property name="Country" />
     <many-to-one name="UserID" class="Bookstore.Models.Domain.User" column="UserID" fetch="select" lazy="false" cascade="save-update" />
 
   </class>

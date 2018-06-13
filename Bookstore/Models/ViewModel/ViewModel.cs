@@ -38,4 +38,27 @@ namespace Bookstore.Models.ViewController
         public string Password { get; set; }
 
     }
+
+    public class AddressViewModel
+    {
+        [Required]
+        [Display(Name ="Imię")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Nazwisko")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Ulica")]
+        public string Street { get; set; }
+
+        [Required]
+        [Display(Name = "Miasto")]
+        public string City { get; set; }
+
+        [Required]
+        [Display(Name = "Kraj")]
+        public string Country { get; set; }
+    }
 }

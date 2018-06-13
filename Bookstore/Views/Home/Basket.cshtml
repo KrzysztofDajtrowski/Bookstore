@@ -33,26 +33,28 @@ else
         </tr>
 
         @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Author)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Genre)
-                </td>
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-            </tr>
-        }
-            
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+        </tr>
+}
 
-            <p><b>Cena łączna: @ViewBag.SummaryPrices PLN</b></p>
-                
     </table>
+    <p><b>Cena łączna: @ViewBag.SummaryPrices PLN</b>  </p> 
+        @Html.ActionLink("Zamów książki", "OrderBookInBasket", "Home", new { @class = "btn btn-default" })
+        @Html.ActionLink("Wyczyść zamówienie", "ClearOrder", "Home", new { @class = "btn btn-default" })
+
+    
 }

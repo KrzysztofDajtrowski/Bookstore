@@ -10,5 +10,10 @@ namespace Bookstore.Models.Domain
         public virtual int Id { get; set; }
         public virtual User UserID { get; set; }
         public virtual bool Active { get; set; }
+        public virtual string FirstName { get; set; }
+        public virtual string LastName { get; set; }
+        public virtual string Street { get; set; }
+        public virtual string City { get; set; }
+        public virtual string Country { get; set; }
     }
 }
