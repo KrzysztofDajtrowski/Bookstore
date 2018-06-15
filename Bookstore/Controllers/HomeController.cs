@@ -45,7 +45,7 @@ namespace Bookstore.Controllers
                     }
                 }
 
-                return RedirectToAction("Search", "Home");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -81,6 +81,7 @@ namespace Bookstore.Controllers
                         {
                             var order = session.Query<Orders>().Where(x => x.UserID.Id == actualUserID).First();
                             ord = session.Load<Orders>(order.Id);
+                            ord.UserID = order.UserID;
                             ord.FirstName = model.FirstName;
                             ord.LastName = model.LastName;
                             ord.Street = model.Street;
@@ -91,7 +92,7 @@ namespace Bookstore.Controllers
                         GenerateEmailWithBooks(GetBooksInCart(actualUserID), User.Identity.GetUserName(), ord);
                     }
 
-                    
+                    ClearOrder();
                     return RedirectToAction("Index", "Home");
                 }
                 else
