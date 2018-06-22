@@ -5,6 +5,9 @@ using System.Web;
 
 namespace Bookstore.Models.Domain
 {
+    /// <summary>
+    /// Klasa Orders, potrzebna do mapowania bazy danych
+    /// </summary>
     public class Orders
     {
         public virtual int Id { get; set; }

@@ -21,13 +21,20 @@ namespace Bookstore.Controllers
 {
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Metoda zwracajaca ID zalogowanego uzytkownika
+        /// </summary>
+        /// <returns></returns>
         private int GetLoggedUserId()
         {
             int id;
             Int32.TryParse(User.Identity.GetUserId(), out id);
             return id;
         }
-
+        /// <summary>
+        /// Metoda czyszcząca koszyk
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ClearOrder()
         {
             if (Request.IsAuthenticated)
@@ -363,7 +370,10 @@ namespace Bookstore.Controllers
         {
             get { return HttpContext.GetOwinContext().Get<SignInManager>(); }
         }
-
+        /// <summary>
+        /// sprawdzenie poprawnosci captch
+        /// </summary>
+        /// <returns></returns>
         public bool IsReCaptchValid()
         {
             var result = false;

@@ -6,6 +6,9 @@ using System.Web;
 
 namespace Bookstore.Models.Domain
 {
+    /// <summary>
+    /// Klasa Book, potrzebna do mapowania bazy danych
+    /// </summary>
     public class Book
     {
         public virtual long Id { get; set; }

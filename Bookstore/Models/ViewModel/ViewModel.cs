@@ -6,10 +6,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Bookstore.Models.ViewController
 {
+    /// <summary>
+    /// Biznes logika
+    /// Rejestracja nowego usera
+    /// wymog wypelnienia wszystkich pol
+    /// [EmailAddress] - sprawdza czy faktycznie wprowadzony zostal adres e-mail
+    /// haslo typ password, min 6 znakow, max 100, wymagane potwierdzenie
+    /// 
+    /// </summary>
     public class RegiesterViewModel
     {
-        [Required]
-        [EmailAddress]
+       
+        [Required]  
+        [EmailAddress] 
         [Display(Name = "Adres e-mail")]
         public string Login { get; set; }
 
@@ -25,9 +34,12 @@ namespace Bookstore.Models.ViewController
         [Compare("Password", ErrorMessage = "Hasło i jego potwierdzenie są niezgodne.")]
         public string RetypePassword { get; set; }
     }
-
+    /// <summary>
+    /// Logowanie, oba pola wymagane, haslo typu password 
+    /// </summary>
     public class LoginViewModel
     {
+       
         [Required]
         [Display(Name = "Email")]
         public string Login { get; set; }
@@ -38,9 +50,12 @@ namespace Bookstore.Models.ViewController
         public string Password { get; set; }
 
     }
-
+    /// <summary>
+    /// dane potrzebne do wysylki, wszystkie pola wymagane
+    /// </summary>
     public class AddressViewModel
     {
+       
         [Required]
         [Display(Name ="Imię")]
         public string FirstName { get; set; }
