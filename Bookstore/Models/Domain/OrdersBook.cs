@@ -6,7 +6,7 @@ using System.Web;
 namespace Bookstore.Models.Domain
 {
     /// <summary>
-    /// Klasa OrdersBook, potrzebna do mapowania bazy danych
+    /// Klasa OrdersBook, potrzebna do mapowania bazy danychh
     /// </summary>
     public class OrdersBook
     {
